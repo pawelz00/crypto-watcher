@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
-import Card from "./main/Card";
+import Arrows from "./main/Arrows";
+import Carousel from "./main/Carousel";
 
 export default function RightPanel() {
   return (
@@ -7,6 +8,11 @@ export default function RightPanel() {
       sx={{
         bgcolor: "secondary.main",
         flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-between",
+        py: 4,
       }}
     >
       <Typography
@@ -16,12 +22,12 @@ export default function RightPanel() {
           textAlign: "center",
           fontWeight: "bold",
           fontSize: "4rem",
-          padding: 4,
         }}
       >
         Pick favourites
       </Typography>
-      <Card />
+      <Carousel />
+      <Arrows />
     </Box>
   );
 }

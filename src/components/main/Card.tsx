@@ -1,12 +1,43 @@
 import { Card, CardActions, CardContent, Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Favorite, FavoriteOutlined } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "../../state/favorites/favoritesSlice";
+import type { AppDispatch, RootState } from "../../state/store";
 
-export default function CardComponent() {
+type CardComponentProps = {
+  id: string;
+  name: string;
+  price: string;
+  lastCheck?: string;
+};
+
+export default function CardComponent({
+  id,
+  name,
+  price,
+  lastCheck,
+}: CardComponentProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const state = useSelector((state: RootState) => state.favorites);
+
+  const handleClick = () => {
+    const isFavorite = state.value.includes(id);
+
+    if (isFavorite) {
+      dispatch(removeFromFavorites(id));
+    } else {
+      dispatch(addToFavorites(id));
+    }
+  };
+
   return (
     <Card
       sx={{
-        maxWidth: 500,
+        width: 500,
         minHeight: 410,
         margin: "auto",
         backgroundColor: "primary.main",
@@ -20,8 +51,8 @@ export default function CardComponent() {
     >
       <CardContent
         sx={{
-          flex: "1 1 auto",
           display: "flex",
+          flex: "1 1 auto",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
@@ -35,16 +66,16 @@ export default function CardComponent() {
             fontWeight: "bold",
           }}
         >
-          Ethereum (ETH)
+          {name}
         </Typography>
         <Typography
           sx={{
             fontSize: "1.25rem",
           }}
         >
-          Current price: $93,200.00
+          Current price: ${price}
           <br />
-          Last check: 12/31/2024 8:20 p.m.
+          Last check: {lastCheck}
         </Typography>
       </CardContent>
       <CardActions
@@ -54,21 +85,31 @@ export default function CardComponent() {
         }}
       >
         <IconButton
+          onClick={handleClick}
           aria-label="Add to favorites"
           size="small"
           sx={{
             color: "#fff",
           }}
         >
-          {/* <FavoriteOutlined /> */}
-          <Favorite
-            sx={{
-              color: "#ff0000",
-              fill: "none",
-              stroke: "#ff0000",
-              strokeWidth: 2,
-            }}
-          />
+          {state.value.includes(id) ? (
+            <Favorite
+              sx={{
+                color: "#ff0000",
+                stroke: "#ff0000",
+                strokeWidth: 2,
+              }}
+            />
+          ) : (
+            <FavoriteOutlined
+              sx={{
+                color: "#ff0000",
+                fill: "none",
+                stroke: "#ff0000",
+                strokeWidth: 2,
+              }}
+            />
+          )}
         </IconButton>
       </CardActions>
     </Card>
