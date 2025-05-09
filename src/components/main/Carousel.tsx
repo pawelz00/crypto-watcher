@@ -35,14 +35,10 @@ export default function Carousel() {
 
   const getTransformValue = () => {
     const centerPosition = containerWidth / 2;
-    console.log("Center Width:", centerPosition);
     const activeItemCenter = activeIndex * itemWidth + itemWidth / 2;
     const transform = centerPosition - activeItemCenter;
-    console.log("Transform Value:", transform);
     return transform;
   };
-
-  console.log(itemWidth);
 
   return (
     <Box position={"relative"} width={"100%"} ref={carouselRef}>

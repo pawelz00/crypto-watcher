@@ -1,8 +1,14 @@
-import { Box, Typography } from "@mui/material";
-import Arrows from "./main/Arrows";
-import Carousel from "./main/Carousel";
+import { createFileRoute } from "@tanstack/react-router";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Arrows from "../components/main/Arrows";
+import Carousel from "../components/main/Carousel";
 
-export default function RightPanel() {
+export const Route = createFileRoute("/")({
+  component: Index,
+});
+
+function Index() {
   return (
     <Box
       sx={{
