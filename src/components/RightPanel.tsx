@@ -13,6 +13,7 @@ export default function RightPanel() {
         alignItems: "center",
         justifyContent: "space-between",
         py: 4,
+        overflow: "hidden",
       }}
     >
       <Typography

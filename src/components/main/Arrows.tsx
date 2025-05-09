@@ -1,10 +1,15 @@
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { Box, IconButton } from "@mui/material";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../state/store";
+import { nextSlide, prevSlide } from "../../state/carousel/carouselSlice";
 
 export default function Arrows() {
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
     <Box flexDirection={"row"} gap={2} display={"flex"}>
-      <IconButton size="large">
+      <IconButton size="large" onClick={() => dispatch(prevSlide())}>
         <ArrowBack
           sx={{
             color: "#fff",
@@ -13,7 +18,7 @@ export default function Arrows() {
           }}
         />
       </IconButton>
-      <IconButton size="large">
+      <IconButton size="large" onClick={() => dispatch(nextSlide())}>
         <ArrowForward
           sx={{
             color: "#fff",

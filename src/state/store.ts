@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import favoritesReducer from "./favorites/favoritesSlice";
+import carouselReducer from "./carousel/carouselSlice";
 
 export const store = configureStore({
   reducer: {
     favorites: favoritesReducer,
+    carousel: carouselReducer,
   },
 });
 
