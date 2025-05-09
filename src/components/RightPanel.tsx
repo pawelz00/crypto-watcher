@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import Card from "./main/Card";
 
 export default function RightPanel() {
   return (
@@ -20,6 +21,7 @@ export default function RightPanel() {
       >
         Pick favourites
       </Typography>
+      <Card />
     </Box>
   );
 }
