@@ -37,8 +37,9 @@ export default function CardComponent({
   return (
     <Card
       sx={{
-        width: 500,
-        minHeight: 410,
+        maxWidth: 500,
+        minHeight: "fit-content",
+        height: 410,
         margin: "auto",
         backgroundColor: "primary.main",
         color: "#fff",
@@ -47,6 +48,7 @@ export default function CardComponent({
         textAlign: "center",
         display: "flex",
         flexDirection: "column",
+        boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
       }}
     >
       <CardContent

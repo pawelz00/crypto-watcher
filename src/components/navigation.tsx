@@ -4,17 +4,11 @@ import {
   Favorite,
   AccountBalanceWallet,
 } from "@mui/icons-material";
-import { useState } from "react";
 import NavigationItem from "./navigation/NavigationItem";
 import { Link } from "@tanstack/react-router";
 
 export default function Navigation() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const matches = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
-  const handleListItemClick = (index: number) => {
-    setSelectedIndex(index);
-  };
 
   return (
     <Paper
@@ -32,26 +26,20 @@ export default function Navigation() {
         {matches && (
           <NavigationItem
             text="My walled USD value: $93,200.00"
-            selectedIndex={selectedIndex}
-            handleListItemClick={handleListItemClick}
             Icon={AccountBalanceWallet}
           />
         )}
         <Link to="/" style={{ textDecoration: "none" }}>
           <NavigationItem
-            index={0}
+            pathname="/"
             text="Pick favourites"
-            selectedIndex={selectedIndex}
-            handleListItemClick={handleListItemClick}
             Icon={AttachMoney}
           />
         </Link>
         <Link to="/manage" style={{ textDecoration: "none" }}>
           <NavigationItem
-            index={1}
+            pathname="/manage"
             text="My cryptocurrencies"
-            selectedIndex={selectedIndex}
-            handleListItemClick={handleListItemClick}
             Icon={Favorite}
           />
         </Link>

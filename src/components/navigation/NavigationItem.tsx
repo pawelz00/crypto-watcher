@@ -4,29 +4,27 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { useLocation } from "@tanstack/react-router";
 
 type NavigationItemProps = {
-  index?: number;
-  selectedIndex?: number;
-  handleListItemClick?: (x: number) => void;
+  pathname?: string;
   text: string;
   Icon: React.ElementType;
 };
 
 export default function NavigationItem({
-  index,
-  selectedIndex,
-  handleListItemClick,
+  pathname,
   text,
   Icon,
 }: NavigationItemProps) {
+  const isCurrentPath = useLocation().pathname === pathname;
+
   return (
     <ListItem disablePadding>
       <ListItemButton
         disableRipple
         disableTouchRipple
-        selected={selectedIndex === index}
-        onClick={() => handleListItemClick && handleListItemClick(index || 0)}
+        selected={isCurrentPath}
         sx={{
           py: 1.5,
           "&.Mui-selected": {
@@ -37,16 +35,21 @@ export default function NavigationItem({
         <ListItemIcon
           sx={{
             minWidth: 40,
-            color: selectedIndex === index ? "#000" : "primary.contrastText",
+            color: isCurrentPath ? "#000" : "primary.contrastText",
           }}
         >
           <Icon />
         </ListItemIcon>
         <ListItemText
           primary={text}
+          slotProps={{
+            primary: {
+              fontWeight: "bold",
+            },
+          }}
           sx={{
             textWrap: "nowrap",
-            color: selectedIndex === index ? "#000" : "primary.contrastText",
+            color: isCurrentPath ? "#000" : "primary.contrastText",
           }}
         />
       </ListItemButton>

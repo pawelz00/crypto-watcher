@@ -1,4 +1,5 @@
 import { Typography, Box, useMediaQuery } from "@mui/material";
+import { Link } from "@tanstack/react-router";
 
 export default function Header() {
   const matches = useMediaQuery((theme) => theme.breakpoints.up("md"));
@@ -18,15 +19,17 @@ export default function Header() {
         textAlign: { xs: "center", md: "match-parent" },
       }}
     >
-      <Typography
-        variant="headerAppText"
-        component={"h1"}
-        sx={{
-          color: "primary.contrastText",
-        }}
-      >
-        CryptoWatcher
-      </Typography>
+      <Link to="/" style={{ textDecoration: "none" }}>
+        <Typography
+          variant="headerAppText"
+          component={"h1"}
+          sx={{
+            color: "primary.contrastText",
+          }}
+        >
+          CryptoWatcher
+        </Typography>
+      </Link>
       {matches && (
         <Typography variant="body1" sx={{ color: "primary.contrastText" }}>
           My walled USD value: $93,200.00

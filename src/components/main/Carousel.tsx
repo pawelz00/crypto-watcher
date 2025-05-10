@@ -1,51 +1,72 @@
 import Box from "@mui/material/Box";
-import data from "../../../crypto.json";
 import CardComponent from "./Card";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useRef, useState } from "react";
+import { useResizeObserver } from "../../hooks/use-resize-observer";
 import type { RootState } from "../../state/store";
-import { setItems } from "../../state/carousel/carouselSlice";
-import { useEffect, useRef, useState } from "react";
 
 export default function Carousel() {
-  const dispatch = useDispatch();
   const { activeIndex, items } = useSelector(
     (state: RootState) => state.carousel
   );
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [itemWidth, setItemWidth] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [dimensions, setDimensions] = useState({
+    containerWidth: 0,
+    itemWidth: 0,
+  });
 
-  useEffect(() => {
-    dispatch(setItems(data));
-  }, []);
+  useResizeObserver(carouselRef, (entry) => {
+    const containerWidth = entry.contentRect.width;
+    const isMobile = window.innerWidth < 768;
+    const itemsPerView = isMobile ? 1.25 : 2;
+    const itemWidth = containerWidth / itemsPerView;
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (carouselRef.current) {
-        const containerWidth = carouselRef.current.offsetWidth;
-        setContainerWidth(containerWidth);
-        setItemWidth(containerWidth * 0.5);
-      }
-    };
+    setDimensions({ containerWidth, itemWidth });
 
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
+    if (!isLoaded) setIsLoaded(true);
+  });
 
   const getTransformValue = () => {
+    const { containerWidth, itemWidth } = dimensions;
     const centerPosition = containerWidth / 2;
     const activeItemCenter = activeIndex * itemWidth + itemWidth / 2;
-    const transform = centerPosition - activeItemCenter;
-    return transform;
+    return centerPosition - activeItemCenter;
   };
 
+  if (!isLoaded || items.length === 0) {
+    return (
+      <Box
+        ref={carouselRef}
+        sx={{
+          width: "100%",
+          height: "300px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "background.paper",
+        }}
+      >
+        Loading...
+      </Box>
+    );
+  }
+
   return (
-    <Box position={"relative"} width={"100%"} ref={carouselRef}>
+    <Box
+      position="relative"
+      width="100%"
+      height="100%"
+      ref={carouselRef}
+      role="region"
+      aria-label="Cryptocurrency carousel"
+      overflow={"hidden"}
+      alignContent={"center"}
+    >
       <Box
         sx={{
           display: "flex",
-          transition: "transform 0.5s ease",
+          transition: "transform 0.3s ease",
           transform: `translateX(${getTransformValue()}px)`,
         }}
       >
@@ -54,17 +75,19 @@ export default function Carousel() {
 
           return (
             <Box
-              key={item.label}
+              key={item.id}
               sx={{
-                flex: `0 0 ${itemWidth}px`,
-                transition: "all 0.3s ease",
+                flex: `0 0 ${dimensions.itemWidth}px`,
+                padding: "0 8px",
+                boxSizing: "border-box",
               }}
+              aria-hidden={!isActive}
             >
               <Box
                 sx={{
                   transition: "all 0.3s ease",
                   transform: isActive ? "scale(1)" : "scale(0.9)",
-                  opacity: isActive ? 1 : 0.75,
+                  opacity: isActive ? 1 : 0.7,
                 }}
               >
                 <CardComponent
