@@ -1,22 +1,14 @@
 import { Card, CardActions, CardContent, Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Favorite, FavoriteOutlined } from "@mui/icons-material";
+import Form from "./Form";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToFavorites,
   removeFromFavorites,
-} from "../../state/favorites/favoritesSlice";
-import type { AppDispatch, RootState } from "../../state/store";
+} from "@/state/favorites/favoritesSlice";
 import { formatDateTime, formatMoney } from "@/helpers/formatter";
-import {
-  Box,
-  TextField,
-  FormControl,
-  Select,
-  MenuItem,
-  Button,
-} from "@mui/material";
-import Form from "./Form";
+import type { AppDispatch, RootState } from "@/state/store";
 
 type CardComponentProps = {
   id: string;
@@ -68,7 +60,6 @@ export default function CardComponent({
       <CardContent
         sx={{
           display: "flex",
-          flex: "1 1 auto",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
@@ -96,12 +87,15 @@ export default function CardComponent({
         </Typography>
         <Typography
           sx={{
+            fontWeight: "regular",
             fontSize: "1.25rem",
           }}
         >
           Current price: ${formatMoney(price)}
           <br />
-          Last check: {formatDateTime(lastCheck)}
+          {withForm
+            ? `Value in USD: $${formatMoney(price)}`
+            : `Last check: ${formatDateTime(lastCheck)}`}
         </Typography>
         {withForm && <Form unit={name} />}
       </CardContent>

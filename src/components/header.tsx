@@ -1,9 +1,12 @@
+import { formatMoney } from "@/helpers/formatter";
+import type { RootState } from "@/state/store";
 import { Typography, Box, useMediaQuery } from "@mui/material";
 import { Link } from "@tanstack/react-router";
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const matches = useMediaQuery((theme) => theme.breakpoints.up("md"));
-
+  const { walletValue } = useSelector((state: RootState) => state.userData);
   return (
     <Box
       component={"header"}
@@ -32,7 +35,7 @@ export default function Header() {
       </Link>
       {matches && (
         <Typography variant="body1" sx={{ color: "primary.contrastText" }}>
-          My walled USD value: $93,200.00
+          My walled USD value: ${formatMoney(walletValue)}
         </Typography>
       )}
     </Box>

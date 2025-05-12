@@ -6,9 +6,13 @@ import {
 } from "@mui/icons-material";
 import NavigationItem from "./navigation/NavigationItem";
 import { Link } from "@tanstack/react-router";
+import { useSelector } from "react-redux";
+import { formatMoney } from "@/helpers/formatter";
+import type { RootState } from "@/state/store";
 
 export default function Navigation() {
   const matches = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const { walletValue } = useSelector((state: RootState) => state.userData);
 
   return (
     <Paper
@@ -25,7 +29,7 @@ export default function Navigation() {
       <List component="nav" aria-label="Navigation" disablePadding>
         {matches && (
           <NavigationItem
-            text="My walled USD value: $93,200.00"
+            text={`My walled USD value: ${formatMoney(walletValue)}`}
             Icon={AccountBalanceWallet}
           />
         )}
