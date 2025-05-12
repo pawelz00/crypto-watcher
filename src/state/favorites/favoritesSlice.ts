@@ -1,9 +1,6 @@
+import type { FavoritesState } from "@/types/slices";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-
-interface FavoritesState {
-  value: string[];
-}
 
 const getInitialFavorites = (): string[] => {
   const data = localStorage.getItem("favoriteCryptos");

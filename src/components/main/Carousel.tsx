@@ -1,11 +1,15 @@
 import Box from "@mui/material/Box";
 import CardComponent from "./Card";
 import { useSelector } from "react-redux";
-import { useRef, useState } from "react";
-import { useResizeObserver } from "../../hooks/use-resize-observer";
-import type { RootState } from "../../state/store";
+import { useCallback, useRef, useState } from "react";
+import { useResizeObserver } from "@/hooks/use-resize-observer";
+import type { RootState } from "@/state/store";
 
-export default function Carousel() {
+type CarouselProps = {
+  withForm?: boolean;
+};
+
+export default function Carousel({ withForm = false }: CarouselProps) {
   const { activeIndex, items } = useSelector(
     (state: RootState) => state.carousel
   );
@@ -16,16 +20,21 @@ export default function Carousel() {
     itemWidth: 0,
   });
 
-  useResizeObserver(carouselRef, (entry) => {
-    const containerWidth = entry.contentRect.width;
-    const isMobile = window.innerWidth < 768;
-    const itemsPerView = isMobile ? 1.25 : 2;
-    const itemWidth = containerWidth / itemsPerView;
+  const resizeCallback = useCallback(
+    (entry: ResizeObserverEntry) => {
+      const containerWidth = entry.contentRect.width;
+      const isMobile = window.innerWidth < 768;
+      const itemsPerView = isMobile ? 1.25 : 2;
+      const itemWidth = containerWidth / itemsPerView;
 
-    setDimensions({ containerWidth, itemWidth });
+      setDimensions({ containerWidth, itemWidth });
 
-    if (!isLoaded) setIsLoaded(true);
-  });
+      if (!isLoaded) setIsLoaded(true);
+    },
+    [isLoaded]
+  );
+
+  useResizeObserver(carouselRef, resizeCallback);
 
   const getTransformValue = () => {
     const { containerWidth, itemWidth } = dimensions;
@@ -44,7 +53,7 @@ export default function Carousel() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          bgcolor: "background.paper",
+          bgcolor: "2",
         }}
       >
         Loading...
@@ -90,12 +99,7 @@ export default function Carousel() {
                   opacity: isActive ? 1 : 0.7,
                 }}
               >
-                <CardComponent
-                  id={item.id}
-                  name={item.name}
-                  price={String(item.price)}
-                  lastCheck={String(item.lastCheck)}
-                />
+                <CardComponent {...item} withForm={withForm} />
               </Box>
             </Box>
           );

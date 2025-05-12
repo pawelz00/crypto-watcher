@@ -1,15 +1,12 @@
+import type { CarouselState } from "@/types/slices";
 import { createSlice } from "@reduxjs/toolkit";
-
-interface CarouselState {
-  activeIndex: number;
-  items: any[];
-}
+import data from "../../../crypto.json";
 
 const carouselSlice = createSlice({
   name: "carousel",
   initialState: {
     activeIndex: 0,
-    items: [],
+    items: data,
   } as CarouselState,
   reducers: {
     nextSlide: (state) => {

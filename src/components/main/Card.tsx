@@ -7,12 +7,24 @@ import {
   removeFromFavorites,
 } from "../../state/favorites/favoritesSlice";
 import type { AppDispatch, RootState } from "../../state/store";
+import { formatDateTime, formatMoney } from "@/helpers/formatter";
+import {
+  Box,
+  TextField,
+  FormControl,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
+import Form from "./Form";
 
 type CardComponentProps = {
   id: string;
   name: string;
-  price: string;
+  price: number;
   lastCheck?: string;
+  img?: string;
+  withForm?: boolean;
 };
 
 export default function CardComponent({
@@ -20,6 +32,8 @@ export default function CardComponent({
   name,
   price,
   lastCheck,
+  img,
+  withForm = false,
 }: CardComponentProps) {
   const dispatch = useDispatch<AppDispatch>();
   const state = useSelector((state: RootState) => state.favorites);
@@ -38,8 +52,8 @@ export default function CardComponent({
     <Card
       sx={{
         maxWidth: 500,
-        minHeight: "fit-content",
-        height: 410,
+        minHeight: 410,
+        height: "fit-content",
         margin: "auto",
         backgroundColor: "primary.main",
         color: "#fff",
@@ -59,9 +73,19 @@ export default function CardComponent({
           alignItems: "center",
           justifyContent: "center",
           gap: 3,
+          padding: "2.5rem",
         }}
       >
-        <Typography>Photo</Typography>
+        <img
+          src={`src/assets/${img}`}
+          alt={`${name} logo`}
+          style={{
+            width: 150,
+            height: 150,
+            objectFit: "contain",
+          }}
+        />
+
         <Typography
           sx={{
             fontSize: "2rem",
@@ -75,10 +99,11 @@ export default function CardComponent({
             fontSize: "1.25rem",
           }}
         >
-          Current price: ${price}
+          Current price: ${formatMoney(price)}
           <br />
-          Last check: {lastCheck}
+          Last check: {formatDateTime(lastCheck)}
         </Typography>
+        {withForm && <Form unit={name} />}
       </CardContent>
       <CardActions
         disableSpacing
@@ -87,12 +112,11 @@ export default function CardComponent({
         }}
       >
         <IconButton
+          disableRipple
+          disableFocusRipple
           onClick={handleClick}
           aria-label="Add to favorites"
-          size="small"
-          sx={{
-            color: "#fff",
-          }}
+          size="medium"
         >
           {state.value.includes(id) ? (
             <Favorite
@@ -100,6 +124,8 @@ export default function CardComponent({
                 color: "#ff0000",
                 stroke: "#ff0000",
                 strokeWidth: 2,
+                width: 32,
+                height: 30,
               }}
             />
           ) : (
@@ -109,6 +135,8 @@ export default function CardComponent({
                 fill: "none",
                 stroke: "#ff0000",
                 strokeWidth: 2,
+                width: 32,
+                height: 30,
               }}
             />
           )}
