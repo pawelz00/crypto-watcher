@@ -66,8 +66,8 @@ export default function CardComponent({
           src={`src/assets/${img}`}
           alt={`${name} logo`}
           style={{
-            width: 150,
-            height: 150,
+            maxWidth: "150px",
+            maxHeight: "auto",
             objectFit: "contain",
           }}
         />

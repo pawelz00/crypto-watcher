@@ -19,6 +19,7 @@ function Index() {
         justifyContent: "space-between",
         py: 4,
         overflow: "hidden",
+        gap: 3,
       }}
     >
       <Typography
@@ -27,7 +28,7 @@ function Index() {
           color: "primary.contrastText",
           textAlign: "center",
           fontWeight: "bold",
-          fontSize: "4rem",
+          fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
         }}
       >
         Pick favourites

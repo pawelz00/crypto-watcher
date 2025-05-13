@@ -146,6 +146,7 @@ export default function Carousel({
         position="relative"
         width="100%"
         height="100%"
+        maxHeight={"100%"}
         ref={carouselRef}
         role="region"
         aria-label="Cryptocurrency carousel"
