@@ -1,23 +1,28 @@
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import { useDispatch, useSelector } from "react-redux";
-import { nextSlide, prevSlide } from "../../state/carousel/carouselSlice";
-import type { AppDispatch, RootState } from "../../state/store";
+import { nextSlide, prevSlide } from "@/state/carousel/carouselSlice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/state/store";
 
-export default function Arrows() {
-  const { activeIndex, items } = useSelector(
-    (state: RootState) => state.carousel
-  );
+type ArrowsProps = {
+  isFirstSlide: boolean;
+  isLastSlide: boolean;
+  numberOfSlides: number;
+};
+
+export default function Arrows({
+  isFirstSlide,
+  isLastSlide,
+  numberOfSlides,
+}: ArrowsProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const isFirstSlide = activeIndex === 0;
-  const isLastSlide = activeIndex === items.length - 1;
 
   return (
     <Box flexDirection={"row"} gap={2} display={"flex"}>
       <IconButton
         size="large"
-        onClick={() => dispatch(prevSlide())}
+        onClick={() => dispatch(prevSlide(numberOfSlides))}
         disabled={isFirstSlide}
       >
         <ArrowBack
@@ -34,7 +39,7 @@ export default function Arrows() {
       </IconButton>
       <IconButton
         size="large"
-        onClick={() => dispatch(nextSlide())}
+        onClick={() => dispatch(nextSlide(numberOfSlides))}
         disabled={isLastSlide}
       >
         <ArrowForward

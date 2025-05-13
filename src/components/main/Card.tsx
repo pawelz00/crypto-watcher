@@ -2,13 +2,11 @@ import { Card, CardActions, CardContent, Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Favorite, FavoriteOutlined } from "@mui/icons-material";
 import Form from "./Form";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addToFavorites,
-  removeFromFavorites,
-} from "@/state/favorites/favoritesSlice";
+import { useDispatch } from "react-redux";
+
 import { formatDateTime, formatMoney } from "@/helpers/formatter";
-import type { AppDispatch, RootState } from "@/state/store";
+import type { AppDispatch } from "@/state/store";
+import { changeFavoriteState } from "@/state/crypto/cryptoSlice";
 
 type CardComponentProps = {
   id: string;
@@ -16,6 +14,7 @@ type CardComponentProps = {
   price: number;
   lastCheck?: string;
   img?: string;
+  isFavorite: boolean;
   withForm?: boolean;
 };
 
@@ -25,19 +24,13 @@ export default function CardComponent({
   price,
   lastCheck,
   img,
+  isFavorite,
   withForm = false,
 }: CardComponentProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const state = useSelector((state: RootState) => state.favorites);
 
   const handleClick = () => {
-    const isFavorite = state.value.includes(id);
-
-    if (isFavorite) {
-      dispatch(removeFromFavorites(id));
-    } else {
-      dispatch(addToFavorites(id));
-    }
+    dispatch(changeFavoriteState({ id }));
   };
 
   return (
@@ -112,7 +105,7 @@ export default function CardComponent({
           aria-label="Add to favorites"
           size="medium"
         >
-          {state.value.includes(id) ? (
+          {isFavorite ? (
             <Favorite
               sx={{
                 color: "#ff0000",

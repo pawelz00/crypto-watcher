@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Arrows from "@/components/main/Arrows";
 import Carousel from "@/components/main/Carousel";
 
 export const Route = createFileRoute("/")({
@@ -34,7 +33,6 @@ function Index() {
         Pick favourites
       </Typography>
       <Carousel />
-      <Arrows />
     </Box>
   );
 }

@@ -1,9 +1,11 @@
 import Box from "@mui/material/Box";
 import CardComponent from "./Card";
-import { useSelector } from "react-redux";
-import { useCallback, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useResizeObserver } from "@/hooks/use-resize-observer";
-import type { RootState } from "@/state/store";
+import type { AppDispatch, RootState } from "@/state/store";
+import Arrows from "./Arrows";
+import { resetActiveIndex } from "@/state/carousel/carouselSlice";
 
 type CarouselProps = {
   withForm?: boolean;
@@ -14,16 +16,19 @@ export default function Carousel({
   withForm = false,
   onlyFavorites = false,
 }: CarouselProps) {
-  const { activeIndex, items } = useSelector(
-    (state: RootState) => state.carousel
-  );
-  const favorites = useSelector((state: RootState) => state.favorites);
+  const dispatch = useDispatch<AppDispatch>();
+  const items = useSelector((state: RootState) => state.crypto);
+  const { activeIndex } = useSelector((state: RootState) => state.carousel);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [dimensions, setDimensions] = useState({
     containerWidth: 0,
     itemWidth: 0,
   });
+
+  useEffect(() => {
+    dispatch(resetActiveIndex());
+  }, [onlyFavorites, dispatch]);
 
   const resizeCallback = useCallback(
     (entry: ResizeObserverEntry) => {
@@ -48,12 +53,12 @@ export default function Carousel({
     return centerPosition - activeItemCenter;
   };
 
-  const finalData = () => {
+  const finalData = useMemo(() => {
     if (onlyFavorites) {
-      return items.filter((item) => favorites.value.includes(item.id));
+      return items.filter((item) => item.isFavorite);
     }
     return items;
-  };
+  }, [items, onlyFavorites]);
 
   if (!isLoaded || items.length === 0) {
     return (
@@ -74,49 +79,56 @@ export default function Carousel({
   }
 
   return (
-    <Box
-      position="relative"
-      width="100%"
-      height="100%"
-      ref={carouselRef}
-      role="region"
-      aria-label="Cryptocurrency carousel"
-      overflow={"hidden"}
-      alignContent={"center"}
-    >
+    <>
       <Box
-        sx={{
-          display: "flex",
-          transition: "transform 0.3s ease",
-          transform: `translateX(${getTransformValue()}px)`,
-        }}
+        position="relative"
+        width="100%"
+        height="100%"
+        ref={carouselRef}
+        role="region"
+        aria-label="Cryptocurrency carousel"
+        overflow={"hidden"}
+        alignContent={"center"}
       >
-        {finalData().map((item, idx) => {
-          const isActive = idx === activeIndex;
+        <Box
+          sx={{
+            display: "flex",
+            transition: "transform 0.3s ease",
+            transform: `translateX(${getTransformValue()}px)`,
+          }}
+        >
+          {finalData.map((item, idx) => {
+            const isActive = idx === activeIndex;
 
-          return (
-            <Box
-              key={item.id}
-              sx={{
-                flex: `0 0 ${dimensions.itemWidth}px`,
-                padding: "0 8px",
-                boxSizing: "border-box",
-              }}
-              aria-hidden={!isActive}
-            >
+            return (
               <Box
+                key={item.id}
                 sx={{
-                  transition: "all 0.3s ease",
-                  transform: isActive ? "scale(1)" : "scale(0.9)",
-                  opacity: isActive ? 1 : 0.7,
+                  flex: `0 0 ${dimensions.itemWidth}px`,
+                  padding: "0 8px",
+                  boxSizing: "border-box",
                 }}
+                aria-hidden={!isActive}
               >
-                <CardComponent {...item} withForm={withForm} />
+                <Box
+                  sx={{
+                    transition: "all 0.3s ease",
+                    transform: isActive ? "scale(1)" : "scale(0.9)",
+                    opacity: isActive ? 1 : 0.7,
+                  }}
+                >
+                  <CardComponent {...item} withForm={withForm} />
+                </Box>
               </Box>
-            </Box>
-          );
-        })}
+            );
+          })}
+        </Box>
       </Box>
-    </Box>
+      <Arrows
+        isFirstSlide={activeIndex === 0}
+        isLastSlide={activeIndex === finalData.length - 1}
+        numberOfSlides={finalData.length}
+      />
+    </>
   );
 }

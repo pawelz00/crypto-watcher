@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import favoritesReducer from "./favorites/favoritesSlice";
-import carouselReducer from "./carousel/carouselSlice";
+import cryptoReducer from "./crypto/cryptoSlice";
 import userDataReducer from "./user-data/userDataSlice";
+import carouselReducer from "./carousel/carouselSlice";
 
 export const store = configureStore({
   reducer: {
-    favorites: favoritesReducer,
     carousel: carouselReducer,
+    crypto: cryptoReducer,
     userData: userDataReducer,
   },
 });

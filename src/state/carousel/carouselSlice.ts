@@ -1,28 +1,25 @@
-import type { CarouselState } from "@/types/slices";
-import { createSlice } from "@reduxjs/toolkit";
-import data from "../../../crypto.json";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 const carouselSlice = createSlice({
   name: "carousel",
   initialState: {
     activeIndex: 0,
-    items: data,
-  } as CarouselState,
+  },
   reducers: {
-    nextSlide: (state) => {
-      state.activeIndex = (state.activeIndex + 1) % state.items.length;
-    },
-    prevSlide: (state) => {
-      state.activeIndex =
-        (state.activeIndex - 1 + state.items.length) % state.items.length;
-    },
-    setItems: (state, action) => {
-      state.items = action.payload;
+    resetActiveIndex: (state) => {
       state.activeIndex = 0;
+    },
+    nextSlide: (state, action: PayloadAction<number>) => {
+      const length = action.payload;
+      state.activeIndex = (state.activeIndex + 1) % length;
+    },
+    prevSlide: (state, action: PayloadAction<number>) => {
+      const length = action.payload;
+      state.activeIndex = (state.activeIndex - 1 + length) % length;
     },
   },
 });
 
-export const { nextSlide, prevSlide, setItems } = carouselSlice.actions;
+export const { nextSlide, prevSlide, resetActiveIndex } = carouselSlice.actions;
 
 export default carouselSlice.reducer;

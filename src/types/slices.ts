@@ -11,16 +11,14 @@ interface CryptoItem {
   price: number;
   lastCheck: string;
   img: string;
+  isFavorite: boolean;
 }
 
 export interface FavoritesState {
   value: string[];
 }
 
-export interface CarouselState {
-  activeIndex: number;
-  items: CryptoItem[];
-}
+export type CryptoState = CryptoItem[];
 
 export interface UserDataState {
   walletId: string;
