@@ -19,15 +19,12 @@ export const startPriceUpdates = createAsyncThunk(
     priceUpdateInterval = setInterval(() => {
       dispatch(increaseValues());
 
-      // Get updated crypto prices after increment
       const state = getState() as RootState;
       const cryptoData = state.crypto;
       const wallet = state.userData.wallet;
 
-      // Create price map for wallet items
       const cryptoPrices: Record<string, number> = {};
 
-      // Calculate new values only for crypto in the wallet
       Object.keys(wallet).forEach((cryptoId) => {
         const crypto = cryptoData.find((item) => item.id === cryptoId);
         const walletItem = wallet[cryptoId];
@@ -43,9 +40,8 @@ export const startPriceUpdates = createAsyncThunk(
         }
       });
 
-      // Update wallet values with new prices
       dispatch(updateWalletValue(cryptoPrices));
-    }, 4000);
+    }, 30000);
   }
 );
 
