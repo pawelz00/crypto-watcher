@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useResizeObserver } from "@/hooks/use-resize-observer";
 import Arrows from "./Arrows";
-import { resetActiveIndex } from "@/state/carousel/carouselSlice";
+import {
+  nextSlide,
+  prevSlide,
+  resetActiveIndex,
+} from "@/state/carousel/carouselSlice";
 import Typography from "@mui/material/Typography";
 import { CircularProgress } from "@mui/material";
 import type { AppDispatch, RootState } from "@/state/store";
@@ -23,6 +27,9 @@ export default function Carousel({
   const { activeIndex } = useSelector((state: RootState) => state.carousel);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const minSwipeDistance = 40;
   const [dimensions, setDimensions] = useState({
     containerWidth: 0,
     itemWidth: 0,
@@ -61,6 +68,35 @@ export default function Carousel({
     }
     return items;
   }, [items, onlyFavorites]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && activeIndex < finalData.length - 1) {
+      dispatch(nextSlide(finalData.length));
+    } else if (isRightSwipe && activeIndex > 0) {
+      dispatch(prevSlide(finalData.length));
+    }
+
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
 
   if (finalData.length === 0) {
     return (
@@ -115,6 +151,12 @@ export default function Carousel({
         aria-label="Cryptocurrency carousel"
         overflow={"hidden"}
         alignContent={"center"}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        sx={{
+          touchAction: "none",
+        }}
       >
         <Box
           sx={{
