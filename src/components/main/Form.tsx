@@ -1,7 +1,8 @@
+import { CRYPTO_CONVERSIONS } from "@/helpers/convert-crypto-denomination";
 import type { AppDispatch, RootState } from "@/state/store";
 import {
   modifyWallet,
-  recalculateWalletValue,
+  recalculateSingleCrypto,
 } from "@/state/user-data/userDataSlice";
 import { Box, TextField, Select, MenuItem, Button } from "@mui/material";
 import { useEffect } from "react";
@@ -13,7 +14,7 @@ type FormProps = {
   unit: string;
 };
 
-interface FormData {
+export interface FormData {
   id: string;
   amount: number;
   unit: string;
@@ -34,7 +35,7 @@ export default function Form({ id, unit }: FormProps) {
 
   const onSubmit = (data: FormData) => {
     dispatch(modifyWallet(data));
-    dispatch(recalculateWalletValue());
+    dispatch(recalculateSingleCrypto(data));
   };
 
   useEffect(() => {
@@ -43,6 +44,8 @@ export default function Form({ id, unit }: FormProps) {
       reset({ id, amount, unit, comment });
     }
   }, [wallet]);
+
+  const denomination = CRYPTO_CONVERSIONS[id].smallestUnit;
 
   return (
     <Box
@@ -104,7 +107,7 @@ export default function Form({ id, unit }: FormProps) {
             }}
           >
             <MenuItem value={unit}>{unit}</MenuItem>
-            <MenuItem value={"USD"}>USD</MenuItem>
+            <MenuItem value={denomination}>{denomination}</MenuItem>
           </Select>
         )}
       />

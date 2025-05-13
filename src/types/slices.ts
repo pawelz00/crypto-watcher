@@ -2,6 +2,7 @@ interface CryptoWalletItem {
   id: string;
   amount: number;
   unit: string;
+  currentValue?: number;
   comment?: string;
 }
 

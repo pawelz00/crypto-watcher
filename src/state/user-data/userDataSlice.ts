@@ -1,3 +1,5 @@
+import type { FormData } from "@/components/main/Form";
+import { convertToMainUnit } from "@/helpers/convert-crypto-denomination";
 import type { CryptoItem, UserDataState } from "@/types/slices";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -22,22 +24,34 @@ const getInitialData = (): UserDataState => {
   }
 };
 
-export const recalculateWalletValue = createAsyncThunk(
-  "userData/recalculateWalletValue",
-  async (_, { dispatch }) => {
+export const recalculateSingleCrypto = createAsyncThunk(
+  "userData/recalculateSingleCrypto",
+  async (data: FormData, { dispatch }) => {
     try {
+      const { id, amount } = data;
       const response = await fetch("/crypto.json");
       const cryptoData: CryptoItem[] = await response.json();
+      let price = 0;
 
-      const cryptoPrices = Object.fromEntries(
-        cryptoData.map((crypto) => [crypto.id, crypto.price])
-      );
+      const crypto = cryptoData.find((item) => item.id === id);
 
+      if (!crypto) {
+        throw new Error(`Crypto with id ${id} not found`);
+      }
+
+      if (data.unit !== crypto.name) {
+        const amountDenomination = convertToMainUnit(amount, id) || 0;
+        price = crypto.price * amountDenomination;
+      } else {
+        price = crypto.price * amount;
+      }
+
+      const cryptoPrices = { [id]: price };
       dispatch(updateWalletValue(cryptoPrices));
 
       return cryptoPrices;
     } catch (error) {
-      console.error("Failed to fetch crypto data:", error);
+      console.error(`Failed to fetch crypto data for ${data.id}:`, error);
       return {};
     }
   }
@@ -74,14 +88,24 @@ const userDataSlice = createSlice({
       action: PayloadAction<Record<string, number>>
     ) => {
       const cryptoPrices = action.payload;
-      let totalValue = 0;
 
-      Object.values(state.wallet).forEach((item) => {
-        const price = cryptoPrices[item.id] || 0;
-        totalValue += item.amount * price;
+      Object.entries(cryptoPrices).forEach(([cryptoId, price]) => {
+        const walletItem = state.wallet[cryptoId];
+
+        if (walletItem) {
+          const cryptoValue = price;
+
+          if (walletItem.currentValue !== undefined) {
+            state.walletValue =
+              state.walletValue - walletItem.currentValue + cryptoValue;
+          } else {
+            state.walletValue = state.walletValue + cryptoValue;
+          }
+
+          walletItem.currentValue = cryptoValue;
+        }
       });
 
-      state.walletValue = totalValue;
       localStorage.setItem("userData", JSON.stringify(state));
     },
   },
@@ -96,4 +120,5 @@ interface AddToWalletPayload {
   amount: number;
   unit: string;
   comment?: string;
+  currentValue?: number;
 }
