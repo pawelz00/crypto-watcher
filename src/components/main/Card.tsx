@@ -2,10 +2,10 @@ import { Card, CardActions, CardContent, Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Favorite, FavoriteOutlined } from "@mui/icons-material";
 import Form from "./Form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { formatDateTime, formatMoney } from "@/helpers/formatter";
-import type { AppDispatch } from "@/state/store";
+import type { AppDispatch, RootState } from "@/state/store";
 import { changeFavoriteState } from "@/state/crypto/cryptoSlice";
 
 type CardComponentProps = {
@@ -27,6 +27,8 @@ export default function CardComponent({
   isFavorite,
   withForm = false,
 }: CardComponentProps) {
+  const wallet = useSelector((state: RootState) => state.userData.wallet);
+  const currentValue = wallet[id]?.currentValue || 0;
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = () => {
@@ -87,7 +89,7 @@ export default function CardComponent({
           Current price: ${formatMoney(price)}
           <br />
           {withForm
-            ? `Value in USD: $${formatMoney(price)}`
+            ? `Value in USD: $${formatMoney(Number(currentValue))}`
             : `Last check: ${formatDateTime(lastCheck)}`}
         </Typography>
         {withForm && <Form id={id} unit={name} />}

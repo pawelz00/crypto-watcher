@@ -4,11 +4,11 @@ import {
   Favorite,
   AccountBalanceWallet,
 } from "@mui/icons-material";
-import NavigationItem from "./navigation/NavigationItem";
 import { Link } from "@tanstack/react-router";
 import { useSelector } from "react-redux";
 import { formatMoney } from "@/helpers/formatter";
 import type { RootState } from "@/state/store";
+import NavigationItem from "./NavigationItem";
 
 export default function Navigation() {
   const matches = useMediaQuery((theme) => theme.breakpoints.down("md"));

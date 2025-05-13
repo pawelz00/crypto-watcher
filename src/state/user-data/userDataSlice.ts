@@ -26,11 +26,18 @@ const getInitialData = (): UserDataState => {
 
 export const recalculateSingleCrypto = createAsyncThunk(
   "userData/recalculateSingleCrypto",
-  async (data: FormData, { dispatch }) => {
+  async (
+    {
+      data,
+      cryptoData,
+    }: {
+      data: FormData;
+      cryptoData: CryptoItem[];
+    },
+    { dispatch }
+  ) => {
     try {
       const { id, amount } = data;
-      const response = await fetch("/crypto.json");
-      const cryptoData: CryptoItem[] = await response.json();
       let price = 0;
 
       const crypto = cryptoData.find((item) => item.id === id);

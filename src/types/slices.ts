@@ -2,8 +2,8 @@ interface CryptoWalletItem {
   id: string;
   amount: number;
   unit: string;
-  currentValue?: number;
   comment?: string;
+  currentValue?: number;
 }
 
 export interface CryptoItem {

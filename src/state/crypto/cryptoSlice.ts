@@ -1,9 +1,23 @@
 import type { CryptoState } from "@/types/slices";
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import data from "../../../crypto.json";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 const FAVORITES_KEY = "crypto_favorites";
+
+let priceUpdateInterval: ReturnType<typeof setInterval> | null = null;
+
+export const startPriceUpdates = createAsyncThunk(
+  "crypto/startPriceUpdates",
+  async (_, { dispatch }) => {
+    if (priceUpdateInterval) {
+      clearInterval(priceUpdateInterval);
+    }
+    priceUpdateInterval = setInterval(() => {
+      dispatch(increaseValues());
+    }, 4000);
+  }
+);
 
 const loadFavoritesFromStorage = (): string[] => {
   try {
@@ -32,9 +46,6 @@ const cryptoSlice = createSlice({
     isFavorite: favorites.includes(item.id),
   })) as CryptoState,
   reducers: {
-    setItems: (state, action: PayloadAction<CryptoState>) => {
-      state = action.payload;
-    },
     changeFavoriteState: (state, action: PayloadAction<{ id: string }>) => {
       const { id } = action.payload;
       const item = state.find((item) => item.id === id);
@@ -47,9 +58,14 @@ const cryptoSlice = createSlice({
         saveFavoritesToStorage(favorites);
       }
     },
+    increaseValues: (state) => {
+      state.forEach((crypto) => {
+        crypto.price += 50;
+      });
+    },
   },
 });
 
-export const { setItems, changeFavoriteState } = cryptoSlice.actions;
+export const { changeFavoriteState, increaseValues } = cryptoSlice.actions;
 
 export default cryptoSlice.reducer;

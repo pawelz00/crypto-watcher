@@ -24,18 +24,19 @@ export interface FormData {
 export default function Form({ id, unit }: FormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { wallet } = useSelector((state: RootState) => state.userData);
+  const items = useSelector((state: RootState) => state.crypto);
   const { handleSubmit, control, reset } = useForm<FormData>({
     defaultValues: {
       id: id,
       amount: 1000,
       unit: unit,
-      comment: "Some comment",
+      comment: "",
     },
   });
 
   const onSubmit = (data: FormData) => {
     dispatch(modifyWallet(data));
-    dispatch(recalculateSingleCrypto(data));
+    dispatch(recalculateSingleCrypto({ data, cryptoData: items }));
   };
 
   useEffect(() => {
@@ -61,11 +62,17 @@ export default function Form({ id, unit }: FormProps) {
       <Controller
         name="amount"
         control={control}
-        render={({ field }) => (
+        rules={{
+          required: "Amount is required",
+          validate: (value) => value > 0 || "Amount must be greater than 0",
+        }}
+        render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
             type="number"
             placeholder="Enter amount"
+            error={!!error}
+            helperText={error?.message}
             sx={{
               backgroundColor: "#545454",
               borderRadius: "5px",
@@ -76,6 +83,10 @@ export default function Form({ id, unit }: FormProps) {
               },
               "& .MuiOutlinedInput-notchedOutline": {
                 borderColor: "#fff",
+              },
+              "& .MuiFormHelperText-root": {
+                color: "#ff6b6b",
+                fontWeight: "bold",
               },
             }}
           />

@@ -1,11 +1,20 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import Header from "../components/Header";
-import { Box } from "@mui/material";
-import Navigation from "../components/Navigation";
+import Box from "@mui/material/Box";
+import Header from "@/components/Header";
+import Navigation from "@/components/navigation/Navigation";
+import type { AppDispatch } from "@/state/store";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { startPriceUpdates } from "@/state/crypto/cryptoSlice";
 
-export const Route = createRootRoute({
-  component: () => (
+function RootComponent() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(startPriceUpdates());
+  }, [dispatch]);
+
+  return (
     <>
       <Header />
       <Box
@@ -18,7 +27,10 @@ export const Route = createRootRoute({
         <Navigation />
         <Outlet />
       </Box>
-      <TanStackRouterDevtools />
     </>
-  ),
+  );
+}
+
+export const Route = createRootRoute({
+  component: RootComponent,
 });
