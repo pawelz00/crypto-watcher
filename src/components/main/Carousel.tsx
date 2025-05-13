@@ -7,12 +7,17 @@ import type { RootState } from "@/state/store";
 
 type CarouselProps = {
   withForm?: boolean;
+  onlyFavorites?: boolean;
 };
 
-export default function Carousel({ withForm = false }: CarouselProps) {
+export default function Carousel({
+  withForm = false,
+  onlyFavorites = false,
+}: CarouselProps) {
   const { activeIndex, items } = useSelector(
     (state: RootState) => state.carousel
   );
+  const favorites = useSelector((state: RootState) => state.favorites);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [dimensions, setDimensions] = useState({
@@ -41,6 +46,13 @@ export default function Carousel({ withForm = false }: CarouselProps) {
     const centerPosition = containerWidth / 2;
     const activeItemCenter = activeIndex * itemWidth + itemWidth / 2;
     return centerPosition - activeItemCenter;
+  };
+
+  const finalData = () => {
+    if (onlyFavorites) {
+      return items.filter((item) => favorites.value.includes(item.id));
+    }
+    return items;
   };
 
   if (!isLoaded || items.length === 0) {
@@ -79,7 +91,7 @@ export default function Carousel({ withForm = false }: CarouselProps) {
           transform: `translateX(${getTransformValue()}px)`,
         }}
       >
-        {items.map((item, idx) => {
+        {finalData().map((item, idx) => {
           const isActive = idx === activeIndex;
 
           return (

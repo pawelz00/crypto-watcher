@@ -33,7 +33,7 @@ function Manage() {
       >
         My cryptocurrencies
       </Typography>
-      <Carousel withForm />
+      <Carousel withForm onlyFavorites />
       <Arrows />
     </Box>
   );

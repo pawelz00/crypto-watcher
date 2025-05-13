@@ -25,5 +25,7 @@ export interface CarouselState {
 export interface UserDataState {
   walletId: string;
   walletValue: number;
-  wallet: CryptoWalletItem[];
+  wallet: {
+    [cryptoId: string]: CryptoWalletItem;
+  };
 }

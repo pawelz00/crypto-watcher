@@ -97,7 +97,7 @@ export default function CardComponent({
             ? `Value in USD: $${formatMoney(price)}`
             : `Last check: ${formatDateTime(lastCheck)}`}
         </Typography>
-        {withForm && <Form unit={name} />}
+        {withForm && <Form id={id} unit={name} />}
       </CardContent>
       <CardActions
         disableSpacing
