@@ -5,7 +5,7 @@ interface CryptoWalletItem {
   comment?: string;
 }
 
-interface CryptoItem {
+export interface CryptoItem {
   id: string;
   name: string;
   price: number;

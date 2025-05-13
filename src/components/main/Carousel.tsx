@@ -3,9 +3,11 @@ import CardComponent from "./Card";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useResizeObserver } from "@/hooks/use-resize-observer";
-import type { AppDispatch, RootState } from "@/state/store";
 import Arrows from "./Arrows";
 import { resetActiveIndex } from "@/state/carousel/carouselSlice";
+import Typography from "@mui/material/Typography";
+import { CircularProgress } from "@mui/material";
+import type { AppDispatch, RootState } from "@/state/store";
 
 type CarouselProps = {
   withForm?: boolean;
@@ -60,7 +62,25 @@ export default function Carousel({
     return items;
   }, [items, onlyFavorites]);
 
-  if (!isLoaded || items.length === 0) {
+  if (finalData.length === 0) {
+    return (
+      <Box>
+        <Typography
+          variant="h4"
+          sx={{
+            color: "primary.contrastText",
+            textAlign: "center",
+            fontWeight: "",
+            fontSize: "3rem",
+          }}
+        >
+          No items found
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (!isLoaded) {
     return (
       <Box
         ref={carouselRef}
@@ -73,7 +93,13 @@ export default function Carousel({
           bgcolor: "2",
         }}
       >
-        Loading...
+        <CircularProgress
+          sx={{
+            color: "primary.main",
+            width: "100px",
+            height: "100px",
+          }}
+        />
       </Box>
     );
   }

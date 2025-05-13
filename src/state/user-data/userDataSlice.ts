@@ -1,6 +1,6 @@
-import type { UserDataState } from "@/types/slices";
+import type { CryptoItem, UserDataState } from "@/types/slices";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const getInitialData = (): UserDataState => {
   const data = localStorage.getItem("userData");
@@ -21,6 +21,27 @@ const getInitialData = (): UserDataState => {
     };
   }
 };
+
+export const recalculateWalletValue = createAsyncThunk(
+  "userData/recalculateWalletValue",
+  async (_, { dispatch }) => {
+    try {
+      const response = await fetch("/crypto.json");
+      const cryptoData: CryptoItem[] = await response.json();
+
+      const cryptoPrices = Object.fromEntries(
+        cryptoData.map((crypto) => [crypto.id, crypto.price])
+      );
+
+      dispatch(updateWalletValue(cryptoPrices));
+
+      return cryptoPrices;
+    } catch (error) {
+      console.error("Failed to fetch crypto data:", error);
+      return {};
+    }
+  }
+);
 
 const initialState = getInitialData();
 
@@ -48,10 +69,25 @@ const userDataSlice = createSlice({
 
       localStorage.setItem("userData", JSON.stringify(state));
     },
+    updateWalletValue: (
+      state,
+      action: PayloadAction<Record<string, number>>
+    ) => {
+      const cryptoPrices = action.payload;
+      let totalValue = 0;
+
+      Object.values(state.wallet).forEach((item) => {
+        const price = cryptoPrices[item.id] || 0;
+        totalValue += item.amount * price;
+      });
+
+      state.walletValue = totalValue;
+      localStorage.setItem("userData", JSON.stringify(state));
+    },
   },
 });
 
-export const { modifyWallet } = userDataSlice.actions;
+export const { modifyWallet, updateWalletValue } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
 

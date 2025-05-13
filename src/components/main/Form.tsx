@@ -1,5 +1,8 @@
 import type { AppDispatch, RootState } from "@/state/store";
-import { modifyWallet } from "@/state/user-data/userDataSlice";
+import {
+  modifyWallet,
+  recalculateWalletValue,
+} from "@/state/user-data/userDataSlice";
 import { Box, TextField, Select, MenuItem, Button } from "@mui/material";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -31,6 +34,7 @@ export default function Form({ id, unit }: FormProps) {
 
   const onSubmit = (data: FormData) => {
     dispatch(modifyWallet(data));
+    dispatch(recalculateWalletValue());
   };
 
   useEffect(() => {
