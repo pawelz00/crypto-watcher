@@ -4,7 +4,14 @@ import {
   modifyWallet,
   recalculateSingleCrypto,
 } from "@/state/user-data/userDataSlice";
-import { Box, TextField, Select, MenuItem, Button } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  InputLabel,
+} from "@mui/material";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,29 +74,42 @@ export default function Form({ id, unit }: FormProps) {
           validate: (value) => value > 0 || "Amount must be greater than 0",
         }}
         render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            type="number"
-            placeholder="Enter amount"
-            error={!!error}
-            helperText={error?.message}
-            sx={{
-              backgroundColor: "#545454",
-              borderRadius: "5px",
-              borderColor: "#fff",
-              "& .MuiOutlinedInput-root": {
+          <Box>
+            <InputLabel
+              sx={{
                 color: "white",
                 fontWeight: "bold",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
+                textAlign: "left",
+                mb: 1,
+              }}
+            >
+              Amount:
+            </InputLabel>
+            <TextField
+              fullWidth
+              {...field}
+              type="number"
+              placeholder="Enter amount"
+              error={!!error}
+              helperText={error?.message}
+              sx={{
+                backgroundColor: "#545454",
+                borderRadius: "5px",
                 borderColor: "#fff",
-              },
-              "& .MuiFormHelperText-root": {
-                color: "#ff6b6b",
-                fontWeight: "bold",
-              },
-            }}
-          />
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  fontWeight: "bold",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#fff",
+                },
+                "& .MuiFormHelperText-root": {
+                  color: "#ff6b6b",
+                  fontWeight: "bold",
+                },
+              }}
+            />
+          </Box>
         )}
       />
 
@@ -97,29 +117,42 @@ export default function Form({ id, unit }: FormProps) {
         name="unit"
         control={control}
         render={({ field }) => (
-          <Select
-            {...field}
-            sx={{
-              fontWeight: "bold",
-              textAlign: "left",
-              color: "white",
-              backgroundColor: "#545454",
-              borderRadius: "5px",
-              borderColor: "#fff",
-              "& .MuiOutlinedInput-root": {
+          <Box>
+            <InputLabel
+              sx={{
                 color: "white",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
+                fontWeight: "bold",
+                textAlign: "left",
+                mb: 1,
+              }}
+            >
+              Unit:
+            </InputLabel>
+            <Select
+              fullWidth
+              {...field}
+              sx={{
+                fontWeight: "bold",
+                textAlign: "left",
+                color: "white",
+                backgroundColor: "#545454",
+                borderRadius: "5px",
                 borderColor: "#fff",
-              },
-              "& .MuiSvgIcon-root": {
-                color: "#D9D9D9",
-              },
-            }}
-          >
-            <MenuItem value={unit}>{unit}</MenuItem>
-            <MenuItem value={denomination}>{denomination}</MenuItem>
-          </Select>
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#fff",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: "#D9D9D9",
+                },
+              }}
+            >
+              <MenuItem value={unit}>{unit}</MenuItem>
+              <MenuItem value={denomination}>{denomination}</MenuItem>
+            </Select>
+          </Box>
         )}
       />
 
@@ -127,24 +160,37 @@ export default function Form({ id, unit }: FormProps) {
         name="comment"
         control={control}
         render={({ field }) => (
-          <TextField
-            {...field}
-            placeholder="Enter comment"
-            multiline
-            maxRows={2}
-            sx={{
-              backgroundColor: "#545454",
-              borderRadius: "5px",
-              borderColor: "#fff",
-              "& .MuiOutlinedInput-root": {
+          <Box>
+            <InputLabel
+              sx={{
                 color: "white",
                 fontWeight: "bold",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
+                textAlign: "left",
+                mb: 1,
+              }}
+            >
+              Comment:
+            </InputLabel>
+            <TextField
+              fullWidth
+              {...field}
+              placeholder="Enter comment"
+              multiline
+              maxRows={2}
+              sx={{
+                backgroundColor: "#545454",
+                borderRadius: "5px",
                 borderColor: "#fff",
-              },
-            }}
-          />
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  fontWeight: "bold",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#fff",
+                },
+              }}
+            />
+          </Box>
         )}
       />
 
@@ -155,7 +201,6 @@ export default function Form({ id, unit }: FormProps) {
         sx={{
           alignSelf: "flex-end",
           mt: 2,
-          px: 4,
           border: "1px solid #fff",
           borderRadius: "5px",
           backgroundColor: "#2F8D2F",

@@ -29,11 +29,11 @@ export default function Carousel({
   const [isLoaded, setIsLoaded] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const minSwipeDistance = 40;
   const [dimensions, setDimensions] = useState({
     containerWidth: 0,
     itemWidth: 0,
   });
+  const minSwipeDistance = 40;
 
   useEffect(() => {
     dispatch(resetActiveIndex());
@@ -70,18 +70,15 @@ export default function Carousel({
   }, [items, onlyFavorites]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
     setTouchEnd(0);
     setTouchStart(e.targetTouches[0].clientX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault();
     setTouchEnd(e.targetTouches[0].clientX);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
+  const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
 
     const distance = touchStart - touchEnd;
@@ -100,14 +97,20 @@ export default function Carousel({
 
   if (finalData.length === 0) {
     return (
-      <Box>
+      <Box
+        ref={carouselRef}
+        sx={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Typography
-          variant="h4"
           sx={{
             color: "primary.contrastText",
-            textAlign: "center",
-            fontWeight: "",
-            fontSize: "3rem",
+            fontSize: "2rem",
           }}
         >
           No items found
@@ -122,20 +125,13 @@ export default function Carousel({
         ref={carouselRef}
         sx={{
           width: "100%",
-          height: "300px",
+          height: "100%",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          bgcolor: "2",
         }}
       >
-        <CircularProgress
-          sx={{
-            color: "primary.main",
-            width: "100px",
-            height: "100px",
-          }}
-        />
+        <CircularProgress />
       </Box>
     );
   }
@@ -146,16 +142,16 @@ export default function Carousel({
         position="relative"
         width="100%"
         height="100%"
-        maxHeight={"100%"}
         ref={carouselRef}
         role="region"
         aria-label="Cryptocurrency carousel"
-        overflow={"hidden"}
         alignContent={"center"}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        overflow={"hidden"}
         sx={{
+          overflowY: "auto",
           touchAction: "none",
         }}
       >
@@ -164,6 +160,7 @@ export default function Carousel({
             display: "flex",
             transition: "transform 0.3s ease",
             transform: `translateX(${getTransformValue()}px)`,
+            flex: 1,
           }}
         >
           {finalData.map((item, idx) => {
@@ -184,6 +181,7 @@ export default function Carousel({
                     transition: "all 0.3s ease",
                     transform: isActive ? "scale(1)" : "scale(0.9)",
                     opacity: isActive ? 1 : 0.7,
+                    height: "100%",
                   }}
                 >
                   <CardComponent {...item} withForm={withForm} />
