@@ -1,3 +1,4 @@
+import type { FileRoutesByFullPath } from "@/routeTree.gen";
 import {
   ListItem,
   ListItemButton,
@@ -7,7 +8,7 @@ import {
 import { useLocation } from "@tanstack/react-router";
 
 type NavigationItemProps = {
-  pathname?: string;
+  pathname?: keyof FileRoutesByFullPath;
   text: string;
   Icon: React.ElementType;
 };

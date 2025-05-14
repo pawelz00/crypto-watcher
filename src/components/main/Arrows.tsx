@@ -30,8 +30,8 @@ export default function Arrows({
             color: "#eee",
             stroke: "#fff",
             strokeWidth: 0.1,
-            width: 64,
-            height: 64,
+            width: { md: 64, xs: 48 },
+            height: { md: 64, xs: 48 },
             filter: "drop-shadow(1px 1px 4px rgba(0,0,0,0.5))",
             opacity: isFirstSlide ? 0.3 : 1,
           }}
@@ -47,8 +47,8 @@ export default function Arrows({
             color: "#eee",
             stroke: "#fff",
             strokeWidth: 0.1,
-            width: 64,
-            height: 64,
+            width: { md: 64, xs: 48 },
+            height: { md: 64, xs: 48 },
             filter: "drop-shadow(1px 1px 4px rgba(0,0,0,0.5))",
             opacity: isLastSlide ? 0.3 : 1,
           }}
